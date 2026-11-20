@@ -1,0 +1,6 @@
+# Archivos privados: NO subir a GitHub
+firestore.rules.PRIVADO.txt
+*.PRIVADO.*
+.claude/
+node_modules/
+explorar-diseno.html

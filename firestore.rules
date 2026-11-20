@@ -1,0 +1,34 @@
+rules_version = '2';
+
+// Reglas de seguridad de El 27.
+// Solo los 3 correos de abajo pueden leer y escribir. Cualquier otra cuenta de Google es rechazada.
+// IMPORTANTE: cambia CORREO_1, CORREO_2 y CORREO_3 por los correos reales (en minúsculas).
+// Este archivo es el modelo con marcadores; los correos reales van solo en la consola de Firebase.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autorizado() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'CORREO_1@gmail.com',
+          'CORREO_2@gmail.com',
+          'CORREO_3@gmail.com'
+        ];
+    }
+
+    // Meses cerrados: se pueden crear y leer, pero NUNCA modificar ni borrar.
+    match /cierres/{mes} {
+      allow read: if autorizado();
+      allow create: if autorizado();
+      allow update, delete: if false;
+    }
+
+    // Todo lo demás de la casa
+    match /{coleccion}/{doc} {
+      allow read, write: if autorizado()
+        && coleccion in ['usuarios', 'categorias', 'gastos', 'pagos', 'fotos'];
+    }
+  }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El 27 · Pruebas automáticas</title>
+<style>
+  body{font:16px/1.5 system-ui,sans-serif;max-width:720px;margin:0 auto;padding:20px 16px;background:#fbf8f4;color:#2b2420}
+  h1{font-size:22px;margin:0 0 4px}
+  .resumen{font-weight:700;padding:12px 14px;border-radius:12px;margin:14px 0}
+  .bien{background:#dff3e6;color:#145a2e}.mal{background:#fde2e0;color:#8a1c14}
+  ul{list-style:none;padding:0;margin:0}
+  li{padding:8px 0;border-bottom:1px solid #e8dfd5}
+  .err{display:block;color:#8a1c14;font-size:14px;margin-top:2px}
+</style>
+</head>
+<body>
+<h1>Pruebas automáticas del cerebro</h1>
+<p>Estas pruebas revisan que las cuentas den bien (arriendo, mercado, cuotas, cierre de mes…). Todas deben salir con ✔.</p>
+<div id="res"></div><ul id="lista"></ul>
+<script src="js/logica.js"></script>
+<script src="js/pruebas.js"></script>
+<script>
+  const r = correrPruebas();
+  const ok = r.resultados.length - r.fallos;
+  const res = document.getElementById('res');
+  res.className = 'resumen ' + (r.fallos ? 'mal' : 'bien');
+  res.textContent = r.fallos ? ok + ' de ' + r.resultados.length + ' correctas — ' + r.fallos + ' fallaron' : '🎉 ' + ok + ' de ' + r.resultados.length + ' pruebas correctas';
+  document.getElementById('lista').innerHTML = r.resultados.map(x =>
+    '<li>' + (x.ok ? '✔ ' : '✘ ') + x.nombre.replace(/</g, '&lt;') + (x.ok ? '' : '<span class="err">' + x.error.replace(/</g, '&lt;') + '</span>') + '</li>').join('');
+</script>
+</body>
+</html>
