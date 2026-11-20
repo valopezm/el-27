@@ -5,7 +5,7 @@
    - Tipografías, íconos y librerías de Firebase: primero la copia guardada (cambian casi nunca).
    - Los datos (Firestore) y el login de Google NO pasan por aquí: siempre van directo a internet.
    ============================================================ */
-const VERSION = 'el27-v1';
+const VERSION = 'el27-v2';   // solo se borran las copias guardadas propias ("el27-…"), no las de otras apps del mismo sitio
 const BASE = ['./', 'index.html', 'manifest.webmanifest', 'css/estilos.css',
   'js/firebase-config.js', 'js/logica.js', 'js/datos-prueba.js', 'js/almacen.js', 'js/nube.js', 'js/app.js',
   'fonts/IBMPlexMono-400.woff2', 'fonts/IBMPlexMono-500.woff2', 'fonts/IBMPlexMono-700.woff2',
@@ -16,7 +16,7 @@ self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(BASE)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.indexOf('el27-') === 0 && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener('fetch', e => {
