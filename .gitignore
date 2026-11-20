@@ -5,3 +5,5 @@ firestore.rules.PRIVADO.txt
 node_modules/
 explorar-diseno.html
 plantilla-cuentas-casa/
+
+automatizacion/salida-simulacion/

@@ -1,0 +1,16 @@
+{
+  "name": "el27-correos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cierre automático de mes y correos (recordatorio y cruce) para El 27",
+  "scripts": {
+    "test": "node pruebas.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.10.0",
+    "nodemailer": "^7.0.13"
+  }
+}

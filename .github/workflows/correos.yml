@@ -1,0 +1,81 @@
+name: Correos automáticos y cierre de mes
+
+# Hora de Colombia = UTC-5 (sin horario de verano):
+#   00:10 -> cierra el mes que acaba de terminar (si la app no lo cerró antes)
+#   06:00 -> envía los correos que toquen ese día:
+#            · recordatorio, 3 días antes del último día del mes
+#            · cruce de cuentas, el día 1 del mes siguiente
+# GitHub puede retrasar las ejecuciones programadas unos minutos.
+on:
+  schedule:
+    - cron: '10 5 * * *'
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'Qué probar. recordatorio y cruce envían un correo de PRUEBA (no se anota como enviado). cierre y auto actúan de verdad.'
+        type: choice
+        options: [recordatorio, cruce, cierre, auto]
+        default: recordatorio
+      mes:
+        description: 'Solo para cruce: mes a informar, formato AAAA-MM (vacío = el mes más reciente con movimientos)'
+        required: false
+        default: ''
+      solo_a:
+        description: 'Apodo o correo de la ÚNICA persona que recibe la prueba (vacío = las 3 personas)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: write   # solo para mantener activo el programador (ver el último paso)
+
+concurrency:
+  group: correos
+  cancel-in-progress: false
+
+jobs:
+  correos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: automatizacion/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: automatizacion
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Cierre de mes y correos
+        working-directory: automatizacion
+        env:
+          # Claves guardadas en GitHub → Settings → Secrets and variables → Actions
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          # Datos que no son secretos
+          APP_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          NOMBRE_CASA: El 27
+          LOGO_PALABRA: El
+          LOGO_NUMERO: '27'
+          ZONA_HORARIA: America/Bogota
+          # Qué hacer
+          EVENTO: ${{ github.event_name }}
+          MODO: ${{ github.event_name == 'workflow_dispatch' && inputs.modo || (github.event.schedule == '10 5 * * *' && 'cierre' || 'auto') }}
+          MES: ${{ inputs.mes }}
+          SOLO_A: ${{ inputs.solo_a }}
+        run: node enviar.js
+
+      # GitHub apaga los programadores de repositorios públicos sin actividad en 60 días.
+      # Este paso le dice a GitHub que el programador sigue en uso.
+      - name: Mantener activo el programador
+        if: always() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow enable correos.yml || true

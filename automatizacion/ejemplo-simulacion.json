@@ -1,0 +1,17 @@
+{
+  "usuarios": [
+    { "id": "ana", "nombre": "Ana Ejemplo", "apodo": "Ana", "email": "ana@example.com", "orden": 0 },
+    { "id": "beto", "nombre": "Beto Ejemplo", "apodo": "Beto", "email": "beto@example.com", "orden": 1 },
+    { "id": "caro", "nombre": "Caro Ejemplo", "apodo": "Caro", "email": "caro@example.com", "orden": 2 }
+  ],
+  "categorias": [],
+  "gastos": [
+    { "id": "g1", "descripcion": "Arriendo", "monto": 15000000, "pagadoPor": "ana", "fecha": "2026-11-01", "categoriaId": "arriendo", "creadoPor": "ana", "metodo": "iguales",
+      "reparto": [ { "uid": "ana", "valor": null, "cuotas": 1 }, { "uid": "beto", "valor": null, "cuotas": 1 }, { "uid": "caro", "valor": null, "cuotas": 1 } ], "factura": null },
+    { "id": "g2", "descripcion": "Mercado", "monto": 3000000, "pagadoPor": "beto", "fecha": "2026-11-02", "categoriaId": "mercado", "creadoPor": "beto", "metodo": "iguales",
+      "reparto": [ { "uid": "ana", "valor": null, "cuotas": 1 }, { "uid": "beto", "valor": null, "cuotas": 1 }, { "uid": "caro", "valor": null, "cuotas": 1 } ], "factura": null }
+  ],
+  "pagos": [],
+  "cierres": {},
+  "notificaciones": {}
+}

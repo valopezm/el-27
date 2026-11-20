@@ -588,7 +588,7 @@
     const h = hoy(), mes = L.mesDe(h);
     const saldos = L.saldosDelMes(estado, mes), cruce = L.cruzar(saldos);
     let html = '<h1 style="margin:8px 0 0">Cruce de cuentas</h1>' +
-      '<div class="aviso azul" style="margin-top:12px">El mes se cierra solo el último minuto del último día. Tienes hasta el <strong>11 del mes siguiente</strong> para pagar. El informe llega por correo el día 1 a primera hora <span class="peq">(se activa en la Fase 4)</span>.</div>' +
+      '<div class="aviso azul" style="margin-top:12px">El mes se cierra solo el último minuto del último día. Tienes hasta el <strong>11 del mes siguiente</strong> para pagar. El informe llega por correo el día 1 a primera hora, y 3 días antes del cierre te llega un recordatorio.</div>' +
       '<div class="tarjeta"><h2>Así va ' + esc(L.nombreMes(mes)) + '</h2>' +
       (cruce.length ? cruce.map(filaTransferencia).join('') : '<p style="margin:0">Nadie le debe a nadie.</p>') + '</div>';
     const cerrados = Object.keys(estado.cierres).sort().reverse();
