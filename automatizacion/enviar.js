@@ -89,6 +89,11 @@ function provisional(estado, mes) {
 }
 
 async function main() {
+  // Antes de configurar las claves, las ejecuciones programadas no hacen nada (así GitHub no te llena de avisos de error)
+  if (!SIMULAR && EVENTO === 'schedule' && !env.FIREBASE_SERVICE_ACCOUNT) {
+    console.log('Las claves todavía no están configuradas (GitHub Secrets). No se hace nada. Ver GUIA-FASE-4.md.');
+    return;
+  }
   const hoy = env.HOY_SIMULADO || lib.hoyEn(ZONA);
   console.log('Hoy (' + ZONA + '): ' + hoy + ' | modo: ' + MODO + (PRUEBA ? ' | PRUEBA' : ''));
   const datos = await abrirDatos();
